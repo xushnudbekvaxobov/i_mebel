@@ -1,0 +1,398 @@
+1. Auth endpointlar
+
+Bu user ro‘yxatdan o‘tishi, login qilishi va email tasdiqlashi uchun.
+
+POST   /auth/register
+POST   /auth/login
+POST   /auth/logout
+POST   /auth/refresh
+PATCH  /auth/verify-email/{code}
+POST   /auth/resend-verification
+POST   /auth/forgot-password
+POST   /auth/reset-password
+GET    /auth/me
+Vazifasi
+
+POST /auth/register → yangi user ochadi
+POST /auth/login → access token va refresh token qaytaradi
+POST /auth/logout → tizimdan chiqadi
+POST /auth/refresh → yangi access token beradi
+PATCH /auth/verify-email/{code} → emailni tasdiqlaydi
+POST /auth/resend-verification → verification code qayta yuboradi
+POST /auth/forgot-password → parol tiklash kodi yuboradi
+POST /auth/reset-password → yangi parol o‘rnatadi
+GET /auth/me → hozir login bo‘lgan userni qaytaradi
+
+2. User endpointlar
+
+Bu foydalanuvchi o‘z profilini boshqarishi uchun.
+
+GET    /users/me
+PUT    /users/me
+PATCH  /users/me/profile-image
+PATCH  /users/me/password
+DELETE /users/me
+Vazifasi
+
+GET /users/me → o‘z profilini ko‘radi
+PUT /users/me → ism, telefon, address kabi fieldlarni yangilaydi
+PATCH /users/me/profile-image → profil rasmini almashtiradi
+PATCH /users/me/password → parolni o‘zgartiradi
+DELETE /users/me → accountni o‘chiradi yoki deactivate qiladi
+
+3. Store endpointlar
+
+Bu store yaratish va boshqarish uchun asosiy modul.
+
+POST   /stores/me/profile
+GET    /stores/me/profile
+PUT    /stores/me/profile
+PATCH  /stores/me/profile/image
+DELETE /stores/me/profile
+
+GET    /stores
+GET    /stores/{storeId}
+GET    /stores/{storeId}/products
+GET    /stores/{storeId}/reviews
+GET    /stores/search
+Vazifasi
+
+POST /stores/me/profile → user store yaratadi
+GET /stores/me/profile → o‘z store profilini oladi
+PUT /stores/me/profile → store ma’lumotlarini yangilaydi
+PATCH /stores/me/profile/image → store rasmi yoki bannerini yangilaydi
+DELETE /stores/me/profile → store ni soft delete qiladi
+
+GET /stores → barcha aktiv storelarni pagination bilan qaytaradi
+GET /stores/{storeId} → bitta store detail
+GET /stores/{storeId}/products → shu store mahsulotlari
+GET /stores/{storeId}/reviews → store reviewlari
+GET /stores/search?name=&type=&city= → store qidirish
+
+4. Category endpointlar
+
+Bu umumiy product kategoriyalar uchun.
+
+POST   /categories
+GET    /categories
+GET    /categories/{categoryId}
+PUT    /categories/{categoryId}
+DELETE /categories/{categoryId}
+Vazifasi
+
+POST /categories → yangi kategoriya yaratadi
+GET /categories → kategoriya ro‘yxati
+GET /categories/{categoryId} → bitta kategoriya
+PUT /categories/{categoryId} → kategoriya nomini tahrirlash
+DELETE /categories/{categoryId} → kategoriya o‘chirish
+
+Odatda POST, PUT, DELETE faqat ADMIN uchun bo‘ladi.
+
+5. StoreCategory endpointlar
+
+Bu store qaysi yo‘nalishda ishlashini bog‘lash uchun. Masalan bitta store bir nechta category bilan bog‘lanishi mumkin.
+
+POST   /stores/me/categories/{categoryId}
+GET    /stores/me/categories
+DELETE /stores/me/categories/{categoryId}
+
+GET    /stores/{storeId}/categories
+Vazifasi
+
+POST /stores/me/categories/{categoryId} → storega kategoriya biriktiradi
+GET /stores/me/categories → o‘z store kategoriyalarini ko‘radi
+DELETE /stores/me/categories/{categoryId} → storedan kategoriyani olib tashlaydi
+GET /stores/{storeId}/categories → public store kategoriyalari
+
+6. Product endpointlar
+
+Bu marketplace yuragi. Asosiy modul shu.
+
+POST   /products
+GET    /products
+GET    /products/{productId}
+PUT    /products/{productId}
+PATCH  /products/{productId}/status
+DELETE /products/{productId}
+
+GET    /products/search
+GET    /products/category/{categoryId}
+GET    /products/store/{storeId}
+GET    /products/my
+Vazifasi
+
+POST /products → yangi product qo‘shadi
+GET /products → barcha aktiv productlar
+GET /products/{productId} → bitta product detail
+PUT /products/{productId} → productni to‘liq update
+PATCH /products/{productId}/status → active/inactive/sold-out
+DELETE /products/{productId} → product o‘chirish
+
+GET /products/search?name=&minPrice=&maxPrice=&categoryId=&storeId= → product qidirish
+GET /products/category/{categoryId} → kategoriyaga tegishli productlar
+GET /products/store/{storeId} → store productlari
+GET /products/my → o‘z store productlari
+
+7. ProductImage endpointlar
+
+Agar bitta productga bir nechta rasm bo‘lsa, bu alohida modul bo‘ladi.
+
+POST   /products/{productId}/images
+GET    /products/{productId}/images
+DELETE /products/{productId}/images/{imageId}
+PATCH  /products/{productId}/images/{imageId}/main
+PATCH  /products/{productId}/images/order
+Vazifasi
+
+POST /products/{productId}/images → productga rasm qo‘shadi
+GET /products/{productId}/images → product rasmlari
+DELETE /products/{productId}/images/{imageId} → bitta rasmni o‘chiradi
+PATCH /products/{productId}/images/{imageId}/main → asosiy rasm qiladi
+PATCH /products/{productId}/images/order → rasmlar tartibini o‘zgartiradi
+
+8. Favorite endpointlar
+
+Bu foydalanuvchi yoqtirgan productlarni saqlashi uchun.
+
+POST   /favorites/products/{productId}
+DELETE /favorites/products/{productId}
+GET    /favorites/products
+Vazifasi
+
+POST /favorites/products/{productId} → yoqtirilganlarga qo‘shadi
+DELETE /favorites/products/{productId} → favoritesdan olib tashlaydi
+GET /favorites/products → o‘z favorite productlari
+
+Keyin store favorit ham qo‘shsa bo‘ladi:
+
+POST   /favorites/stores/{storeId}
+DELETE /favorites/stores/{storeId}
+GET    /favorites/stores
+9. Cart endpointlar
+
+Bu savatcha uchun.
+
+POST   /cart/items
+GET    /cart
+PUT    /cart/items/{cartItemId}
+DELETE /cart/items/{cartItemId}
+DELETE /cart/clear
+Vazifasi
+
+POST /cart/items → savatchaga product qo‘shadi
+GET /cart → savatchani ko‘rsatadi
+PUT /cart/items/{cartItemId} → quantity o‘zgartiradi
+DELETE /cart/items/{cartItemId} → bitta itemni o‘chiradi
+DELETE /cart/clear → savatchani tozalaydi
+
+10. Order endpointlar
+
+Bu buyurtmalar uchun.
+
+POST   /orders
+GET    /orders/my
+GET    /orders/{orderId}
+PATCH  /orders/{orderId}/cancel
+
+GET    /seller/orders
+GET    /seller/orders/{orderId}
+PATCH  /seller/orders/{orderId}/status
+Vazifasi
+
+POST /orders → cart yoki direct productdan order yaratadi
+GET /orders/my → userning orderlari
+GET /orders/{orderId} → order detail
+PATCH /orders/{orderId}/cancel → user cancel qiladi
+
+GET /seller/orders → storega tushgan orderlar
+GET /seller/orders/{orderId} → seller order detail
+PATCH /seller/orders/{orderId}/status → pending, accepted, shipped, delivered, cancelled
+
+11. Review endpointlar
+
+Bu product yoki store baholash uchun.
+
+Product review
+POST   /products/{productId}/reviews
+GET    /products/{productId}/reviews
+PUT    /reviews/{reviewId}
+DELETE /reviews/{reviewId}
+Store review
+POST   /stores/{storeId}/reviews
+GET    /stores/{storeId}/reviews
+Vazifasi
+
+POST /products/{productId}/reviews → productga baho va comment yozadi
+GET /products/{productId}/reviews → product reviewlari
+PUT /reviews/{reviewId} → reviewni update qiladi
+DELETE /reviews/{reviewId} → reviewni o‘chiradi
+POST /stores/{storeId}/reviews → storega review yozadi
+GET /stores/{storeId}/reviews → store reviewlari
+
+Agar xohlasang faqat order qilgan user review yozishi mumkin degan logika qo‘shasan.
+
+12. Admin endpointlar
+
+Bu platformani boshqarish uchun.
+
+GET    /admin/users
+GET    /admin/users/{userId}
+PATCH  /admin/users/{userId}/status
+PATCH  /admin/users/{userId}/role
+
+GET    /admin/stores
+GET    /admin/stores/{storeId}
+PATCH  /admin/stores/{storeId}/status
+DELETE /admin/stores/{storeId}
+
+GET    /admin/products
+GET    /admin/products/{productId}
+PATCH  /admin/products/{productId}/status
+DELETE /admin/products/{productId}
+
+POST   /admin/categories
+PUT    /admin/categories/{categoryId}
+DELETE /admin/categories/{categoryId}
+Vazifasi
+
+Admin user, store, product va category larni boshqaradi.
+
+13. File / Upload endpointlar
+
+Agar Cloudinary uploadni alohida endpoint bilan qilmoqchi bo‘lsang:
+
+POST   /uploads/store-image
+POST   /uploads/product-images
+DELETE /uploads
+
+Lekin ko‘p hollarda rasmni to‘g‘ridan-to‘g‘ri store yoki product endpoint ichida qabul qilgan yaxshi.
+
+14. MVP uchun minimal endpointlar
+
+Agar hozir tezroq chiqarish kerak bo‘lsa, shu endpointlar yetadi:
+
+POST   /auth/register
+POST   /auth/login
+PATCH  /auth/verify-email/{code}
+GET    /auth/me
+
+POST   /stores/me/profile
+GET    /stores/me/profile
+PUT    /stores/me/profile
+GET    /stores
+GET    /stores/{storeId}
+
+POST   /categories
+GET    /categories
+
+POST   /stores/me/categories/{categoryId}
+GET    /stores/me/categories
+
+POST   /products
+GET    /products
+GET    /products/{productId}
+PUT    /products/{productId}
+DELETE /products/{productId}
+
+POST   /products/{productId}/images
+DELETE /products/{productId}/images/{imageId}
+
+Shu bilan ham ishga tushadigan marketplace bo‘ladi.
+
+15. Role bo‘yicha endpoint access
+USER
+
+/auth/**
+GET /stores
+GET /products
+GET /categories
+POST /favorites/**
+POST /cart/**
+POST /orders
+POST /reviews/**
+
+SELLER yoki MASTER
+
+POST /stores/me/profile
+PUT /stores/me/profile
+POST /stores/me/categories/{categoryId}
+POST /products
+PUT /products/{productId}
+DELETE /products/{productId}
+POST /products/{productId}/images
+
+ADMIN
+
+/admin/**
+POST /categories
+PUT /categories/{categoryId}
+DELETE /categories/{categoryId}
+
+16. Tavsiya qiladigan URL naming
+
+Men senga bitta muhim maslahat beraman. Nomingni bir xil usulda olib bor.
+
+Masalan:
+
+yaxshi:
+
+/stores/me/profile
+/products/{id}
+/products/{id}/images
+/stores/{id}/reviews
+
+yomonroq:
+
+/getAllStores
+/createProduct
+/deleteImageById
+
+REST usulida resource-based naming yaxshiroq.
+
+17. Tavsiya qiladigan statuslar
+StoreStatus
+ACTIVE
+INACTIVE
+BLOCKED
+PENDING
+ProductStatus
+ACTIVE
+INACTIVE
+OUT_OF_STOCK
+DELETED
+OrderStatus
+PENDING
+ACCEPTED
+PREPARING
+SHIPPED
+DELIVERED
+CANCELLED
+18. Men senga tavsiya qiladigan final modul tuzilishi
+Auth
+User
+Store
+Category
+StoreCategory
+Product
+ProductImage
+Favorite
+Cart
+Order
+Review
+Admin
+
+Bu bilan loyiha keyin:
+
+mebel
+
+home decor
+
+kitchenware
+
+lighting
+
+textile
+
+boshqa uy uchun mahsulotlar
+
+hammasiga kengayadi.

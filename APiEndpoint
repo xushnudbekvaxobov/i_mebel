@@ -1,0 +1,147 @@
+7.1 Auth
+
+POST /api/v1/auth/register
+Yangi foydalanuvchi ro‘yxatdan o‘tadi
+
+POST /api/v1/auth/login
+Tizimga kirish
+
+POST /api/v1/auth/refresh
+Access token yangilash
+
+POST /api/v1/auth/forgot-password
+Parolni tiklash so‘rovi
+
+POST /api/v1/auth/reset-password
+Yangi parol o‘rnatish
+#####################################################################################################
+7.2 User / Profile
+
+GET /api/v1/users/me
+Joriy foydalanuvchi ma’lumotlari
+
+PUT /api/v1/users/me
+Profilni yangilash
+
+GET /api/v1/masters/me/profile
+Usta profilini olish
+
+POST /api/v1/masters/me/profile
+Usta profilini yaratish
+
+PUT /api/v1/masters/me/profile
+Usta profilini yangilash
+###########################################################################################################
+7.3 Specializations
+
+GET /api/v1/specializations
+Mutaxassisliklar ro‘yxati
+###########################################################################################################
+7.4 Orders
+
+POST /api/v1/orders
+Mijoz yangi buyurtma yaratadi
+
+GET /api/v1/orders/my
+Mijozning buyurtmalari
+
+GET /api/v1/orders
+Ustalar uchun buyurtmalar ro‘yxati
+
+GET /api/v1/orders/{id}
+Buyurtma detali
+
+POST /api/v1/orders/{id}/accept
+Usta buyurtmani qabul qiladi
+
+POST /api/v1/orders/{id}/start
+Usta ishni boshlaydi
+
+POST /api/v1/orders/{id}/complete
+Buyurtmani tugatadi
+
+POST /api/v1/orders/{id}/cancel
+Bekor qilish
+###########################################################################################################
+7.5 Notifications
+
+GET /api/v1/notifications
+Bildirishnomalar ro‘yxati
+
+POST /api/v1/notifications/{id}/read
+O‘qilgan deb belgilash
+
+POST /api/v1/notifications/read-all
+Barchasini o‘qilgan qilish
+###########################################################################################################
+7.6 Reviews
+
+POST /api/v1/reviews
+Ustaga baho berish
+
+GET /api/v1/masters/{id}/reviews
+Usta sharhlari
+###########################################################################################################
+7.7 Admin
+
+GET /api/v1/admin/masters/pending
+Tasdiqlanmagan ustalar
+
+POST /api/v1/admin/masters/{id}/approve
+Ustani tasdiqlash
+
+POST /api/v1/admin/masters/{id}/reject
+Ustani rad etish
+
+GET /api/v1/admin/orders
+Barcha buyurtmalar
+
+POST /api/v1/admin/users/{id}/block
+Foydalanuvchini bloklash
+
+#######################################################################################################################
+#########################################################################
+GET /api/v1/specializations
+GET /api/v1/specializations/{id}
+
+GET /api/v1/masters/me/specializations
+POST /api/v1/masters/me/specializations
+DELETE /api/v1/masters/me/specializations/{id}
+
+GET /api/v1/masters/{id}/specializations
+
+GET /api/v1/admin/specializations
+POST /api/v1/admin/specializations
+PUT /api/v1/admin/specializations/{id}
+DELETE /api/v1/admin/specializations/{id}
+
+######################################################################################
+Products
+
+POST /api/v1/products     --
+GET /api/v1/products/my   --
+GET /api/v1/products      --
+GET /api/v1/products/{id} --
+PUT /api/v1/products/{id} --
+DELETE /api/v1/products/{id} --
+
+Product Images
+
+POST /api/v1/products/{productId}/images
+GET /api/v1/products/{productId}/images
+DELETE /api/v1/products/{productId}/images/{imageId}
+PATCH /api/v1/products/{productId}/images/{imageId}/main
+
+Public Products
+
+GET /api/v1/public/products
+GET /api/v1/public/products/{id}
+GET /api/v1/public/masters/{id}/products
+
+Admin Products
+
+GET /api/v1/admin/products
+GET /api/v1/admin/products/{id}
+PATCH /api/v1/admin/products/{id}/hide
+PATCH /api/v1/admin/products/{id}/show
+DELETE /api/v1/admin/products/{id}
