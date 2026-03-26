@@ -12,10 +12,12 @@ import imebel.imebel.repository.ProductRepository;
 import imebel.imebel.service.ProductImagesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -71,6 +73,29 @@ public class ProductImagesServiceImpl implements ProductImagesService {
             throw new AppBadException("Cloudinary image upload failed.");
         }
         return productImageResponseDto;
+    }
+
+    @Override
+    public List<ProductImageResponseDto> getProductImage(Long productId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("product not found"));
+        List<ProductImageEntity> productImageEntity = productEntity.getProductImages();
+        return productImageEntity.stream().map(productImageMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional
+    public List<ProductImageResponseDto> changeMainImage(Long productId, Long imageId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("product not found"));
+        List<ProductImageEntity> productImageEntity = productEntity.getProductImages();
+        for (ProductImageEntity productImageEntity1 : productImageEntity) {
+            productImageEntity1.setMain(false);
+        }
+        ProductImageEntity targetImage = productImageEntity.stream()
+                .filter(image -> image.getId().equals(imageId))
+                .findFirst()
+                .orElseThrow(() -> new DataNotFoundException("image not found"));
+        targetImage.setMain(true);
+        return productImageRepository.saveAll(productImageEntity).stream().map(productImageMapper::toDto).toList();
     }
 
 }

@@ -25,10 +25,13 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
     private final StoreCategoryRepository storeCategoryRepository;
-    public StoreCategoryServiceImpl(StoreRepository storeRepository, CategoryRepository categoryRepository, StoreCategoryRepository storeCategoryRepository) {
+    private final CategoryMapper categoryMapper;
+
+    public StoreCategoryServiceImpl(StoreRepository storeRepository, CategoryRepository categoryRepository, StoreCategoryRepository storeCategoryRepository, CategoryMapper categoryMapper) {
         this.storeRepository = storeRepository;
         this.categoryRepository = categoryRepository;
         this.storeCategoryRepository = storeCategoryRepository;
+        this.categoryMapper = categoryMapper;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         String email = authentication.getName();
         StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(() -> new DataNotFoundException("user profile not found"));
         List<StoreCategoriesEntity> categoryEntity = storeEntity.getStoreCategoryList();
-        return categoryEntity.stream().map(categories -> new CategoryResponseDto(categories.getCategory().getId(), categories.getCategory().getName())).toList();
+        return categoryEntity.stream().map(StoreCategoriesEntity::getCategory).map(categoryMapper::toDto).toList();
     }
     @Override
     public void createMyCategory(String name) {
@@ -64,5 +67,12 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         storeCategoryRepository.delete(storeCategoriesEntity);
     }
 
+    @Override
+    public List<CategoryResponseDto> getAllStoreCategories(Long storeId) {
+        StoreEntity storeEntity = storeRepository.findById(storeId).orElseThrow(()-> new DataNotFoundException("user profile not found"));
+        List<StoreCategoriesEntity> storeCategoriesEntities = storeEntity.getStoreCategoryList();
+        return storeCategoriesEntities.stream().map(StoreCategoriesEntity::getCategory)
+                .map(categoryMapper::toDto).toList();
+    }
 
 }

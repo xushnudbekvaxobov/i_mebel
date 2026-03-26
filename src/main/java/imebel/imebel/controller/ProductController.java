@@ -3,7 +3,6 @@ package imebel.imebel.controller;
 import imebel.imebel.dto.request.ProductCreateDto;
 import imebel.imebel.dto.response.ApiResponse;
 import imebel.imebel.dto.response.PageResponse;
-import imebel.imebel.entity.ProductEntity;
 import imebel.imebel.service.ProductsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +31,7 @@ public class ProductController {
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true, "successfully", productsService.createProducts(productDto, images),201));
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<PageResponse<?>>> getProducts(@RequestParam(defaultValue = "0") int page,
                                                                     @RequestParam(defaultValue = "10") int size){
@@ -41,6 +40,7 @@ public class ProductController {
                 .body(new ApiResponse<>(true, "successfully", productsService.getMyProducts(page, size),200));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getProductById(@PathVariable Long id){
         return ResponseEntity
@@ -48,6 +48,7 @@ public class ProductController {
                 .body(new ApiResponse<>(true, "successfully", productsService.getProductById(id),200));
     }
 
+    @PreAuthorize("hasRole('MASTER')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> updateProduct(@PathVariable Long id,
                                                         @RequestBody ProductCreateDto productDto){
@@ -56,6 +57,7 @@ public class ProductController {
                 .body(new ApiResponse<>(true, "successfully", productsService.updateProduct(id, productDto),200));
     }
 
+    @PreAuthorize("hasRole('MASTER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> deleteProduct(@PathVariable Long id){
         productsService.deleteProduct(id);

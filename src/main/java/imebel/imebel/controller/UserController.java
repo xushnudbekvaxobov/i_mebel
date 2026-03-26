@@ -17,7 +17,8 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @PreAuthorize("hasRole('MASTER')")
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<?>> getCurrentUser() {
         return ResponseEntity
@@ -25,7 +26,7 @@ public class UserController {
                 .body(new ApiResponse<>(true,"getting user by email",userService.getCurrentUser(),200));
     }
 
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @PutMapping("/me")
     public ResponseEntity<ApiResponse<?>> updateCurrentUser(@RequestBody UserUpdateDto userUpdateDto) {
         return ResponseEntity

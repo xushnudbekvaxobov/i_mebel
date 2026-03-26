@@ -23,4 +23,5 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse<>(false, "Validation error", errors, 400));
     }
+
 }

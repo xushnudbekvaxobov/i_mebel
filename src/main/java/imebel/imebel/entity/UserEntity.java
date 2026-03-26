@@ -35,6 +35,7 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false,unique = true)
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private AuthProvider authProvider;
     private String providerId;
     @Enumerated(EnumType.STRING)

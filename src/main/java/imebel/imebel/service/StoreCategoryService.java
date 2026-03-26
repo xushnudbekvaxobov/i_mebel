@@ -10,4 +10,5 @@ public interface StoreCategoryService {
     List<CategoryResponseDto> getMyCategories();
     void createMyCategory(String name);
     void deleteMyCategory(String name);
+    List<CategoryResponseDto> getAllStoreCategories(Long storeId);
 }

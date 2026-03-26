@@ -1,5 +1,6 @@
 package imebel.imebel.entity;
 
+import imebel.imebel.util.enums.CategoryStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,6 @@ public class CategoryEntity {
     private Long id;
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-    //@OneToMany(mappedBy = "category")
-   // List<StoreCategoriesEntity>  categoryList;
+    private CategoryStatus status;
+
 }

@@ -40,10 +40,13 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth->
                         auth
-                                .requestMatchers("/auth/register").permitAll()
-                                .requestMatchers("/auth/login").permitAll()
-                                .requestMatchers("/auth/verify-email/**").permitAll()
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                                .requestMatchers("/auth/register",
+                                        "/auth/login",
+                                        "/auth/verify-email/**",
+                                        "/auth/forgot-password",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui.html").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)

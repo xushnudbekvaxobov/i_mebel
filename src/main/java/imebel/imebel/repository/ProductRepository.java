@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
-    Page<ProductEntity> findAllByMasterProfile(StoreEntity storeEntity, Pageable pageable);
+    Page<ProductEntity> findAllByStoreEntity(StoreEntity storeEntity, Pageable pageable);
 
-    Page<ProductEntity> getAllByMasterProfile(StoreEntity masterProfile, Pageable pageable);
+    Page<ProductEntity> getAllByStoreEntity(StoreEntity masterProfile, Pageable pageable);
 }

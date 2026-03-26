@@ -51,7 +51,7 @@ public class AuthController {
                 .body(new  ApiResponse<>(true,"successfully",null,200));
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse<Void>> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
         userService.resetPassword(resetPasswordDto);

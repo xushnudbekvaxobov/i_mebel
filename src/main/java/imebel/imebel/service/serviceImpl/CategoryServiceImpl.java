@@ -6,6 +6,7 @@ import imebel.imebel.exception.AppBadException;
 import imebel.imebel.exception.DataNotFoundException;
 import imebel.imebel.repository.CategoryRepository;
 import imebel.imebel.service.CategoryService;
+import imebel.imebel.util.enums.CategoryStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponseDto> getAllCategories() {
         List<CategoryEntity> categoryEntity = categoryRepository.findAll();
-        return categoryEntity.stream().map(category-> new CategoryResponseDto(category.getId(), category.getName())).toList();
+        return categoryEntity.stream().map(category-> new CategoryResponseDto(category.getId(), category.getName(), category.getStatus())).toList();
     }
 
     @Override
@@ -34,6 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
         CategoryEntity categoryEntity1 = new CategoryEntity();
         categoryEntity1.setName(name);
+        categoryEntity1.setStatus(CategoryStatus.ACTIVE);
         categoryRepository.save(categoryEntity1);
     }
 
@@ -42,13 +44,20 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Category with id " + id + " does not exist"));
         categoryEntity.setName(name);
        CategoryEntity savedCategory =  categoryRepository.save(categoryEntity);
-        return new CategoryResponseDto(savedCategory.getId(),savedCategory.getName());
+        return new CategoryResponseDto(savedCategory.getId(),savedCategory.getName(),  savedCategory.getStatus());
     }
 
     @Override
     public CategoryResponseDto getCategoryById(Long id) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new AppBadException("Category with id " + id + " does not exist"));
-        return new CategoryResponseDto(categoryEntity.getId(), categoryEntity.getName());
+        return new CategoryResponseDto(categoryEntity.getId(), categoryEntity.getName(),  categoryEntity.getStatus());
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Category with id " + id + " does not exist"));
+        categoryEntity.setStatus(CategoryStatus.DELETED);
+        categoryRepository.save(categoryEntity);
     }
 
 

@@ -10,6 +10,7 @@ import imebel.imebel.repository.UserRepository;
 import imebel.imebel.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
     private final EmailVerificationRepository emailVerificationRepository;
     private final EmailVerificationMapper emailVerificationMapper;
@@ -33,12 +35,7 @@ public class EmailServiceImpl implements EmailService {
     private final Integer blockMinutes = 15;
     private final JavaMailSender mailSender;
 
-    public EmailServiceImpl(JavaMailSender mailSender, EmailVerificationRepository emailVerificationRepository, EmailVerificationMapper emailVerificationMapper, UserRepository userRepository) {
-        this.mailSender = mailSender;
-        this.emailVerificationRepository = emailVerificationRepository;
-        this.emailVerificationMapper = emailVerificationMapper;
-        this.userRepository = userRepository;
-    }
+
 
     @Override
     @Transactional

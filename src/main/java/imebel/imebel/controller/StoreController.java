@@ -19,6 +19,7 @@ public class StoreController {
     public StoreController(StoreService storeService) {
         this.storeService = storeService;
     }
+
     @PreAuthorize("hasRole('MASTER')")
     @GetMapping("/me/profile")
     public ResponseEntity<ApiResponse<?>> getMyStore(){
@@ -35,6 +36,7 @@ public class StoreController {
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true,"Creating store profile", storeService.createMyStore(storeDto,file), 201));
     }
+
     @PreAuthorize("hasRole('MASTER')")
     @PutMapping("/me/profile")
     public ResponseEntity<ApiResponse<?>> updateMyStore(@RequestBody StoreDto storeDto){
@@ -42,7 +44,7 @@ public class StoreController {
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true,"Update store profile", storeService.updateMyStore(storeDto), 200));
     }
-
+    @PreAuthorize("hasRole('MASTER')")
     @PatchMapping(value = "/me/profile/banner-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<?>> updateMyStoreBannerImage(@RequestPart MultipartFile file){
         return ResponseEntity
@@ -50,7 +52,7 @@ public class StoreController {
                 .body(new ApiResponse<>(true, "Store bannerImage updated", storeService.updateStoreBannerImage(file), 200));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getAllStore(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size){
         return ResponseEntity
@@ -58,6 +60,7 @@ public class StoreController {
                 .body(new ApiResponse<>(true,"Getting store profile", storeService.getAllStores(page,size), 200));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> getStoreById(@PathVariable Long id){
         return ResponseEntity
@@ -65,6 +68,7 @@ public class StoreController {
                 .body(new ApiResponse<>(true,"Getting store profile", storeService.getStoreById(id), 200));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/{storeId}/products")
     public ResponseEntity<ApiResponse<?>> getStoreProducts(@PathVariable Long storeId){
         return ResponseEntity
@@ -72,6 +76,7 @@ public class StoreController {
                 .body(new ApiResponse<>(true,"Getting store profile", storeService.getStoreProducts(storeId), 200));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<?>> searchStore(@RequestParam(required = false) String name,
                                                       @RequestParam(required = false) Long categoryId){

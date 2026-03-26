@@ -85,7 +85,7 @@ public class ProductsServiceImpl implements ProductsService {
         String email = authentication.getName();
         StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(()-> new DataNotFoundException("master not found"));
         PageRequest pageRequest =  PageRequest.of(page, size);
-        Page<ProductEntity> productEntityPage = productRepository.getAllByMasterProfile(storeEntity,pageRequest);
+        Page<ProductEntity> productEntityPage = productRepository.getAllByStoreEntity(storeEntity,pageRequest);
         List<ProductResponseDto> productResponseDtoList = productEntityPage.map(productMapper::toDto).toList();
         return PageResponse.<ProductResponseDto>builder()
                 .content(productResponseDtoList)
