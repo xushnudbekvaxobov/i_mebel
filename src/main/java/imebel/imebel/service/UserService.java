@@ -5,13 +5,14 @@ import imebel.imebel.dto.request.ResetPasswordDto;
 import imebel.imebel.dto.request.UserDto;
 
 import imebel.imebel.dto.request.UserUpdateDto;
+import imebel.imebel.dto.response.LoginResponseDto;
 import imebel.imebel.dto.response.UserResponseDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
     void register(UserDto userDto);
-    String login(LoginDto loginDto);
+    LoginResponseDto login(LoginDto loginDto);
     void verifyEmail(String email, String verificationCode);
     void sendVerificationCodeForForgotPassword(String email);
     void resetPassword(ResetPasswordDto resetPasswordDto);

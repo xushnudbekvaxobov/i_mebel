@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginDto loginDto){
+    public ResponseEntity<ApiResponse<?>> login(@RequestBody LoginDto loginDto){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true,"successfully", userService.login(loginDto),201));

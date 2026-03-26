@@ -5,6 +5,7 @@ import imebel.imebel.dto.request.ResetPasswordDto;
 import imebel.imebel.dto.request.UserDto;
 import imebel.imebel.dto.request.UserUpdateDto;
 import imebel.imebel.dto.response.ApiResponse;
+import imebel.imebel.dto.response.LoginResponseDto;
 import imebel.imebel.dto.response.UserResponseDto;
 import imebel.imebel.entity.EmailVerificationEntity;
 import imebel.imebel.entity.UserEntity;
@@ -74,13 +75,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String login(LoginDto loginDto) {
+    public LoginResponseDto login(LoginDto loginDto) {
         UserEntity userEntity = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new DataNotFoundException("User not found with email: " + loginDto.getEmail()));
         if(!bCryptPasswordEncoder.matches(loginDto.getPassword(), userEntity.getPassword())){
             throw new AppBadException("Your password is invalid password");
         }
         System.out.println("role" + userEntity.getRole());
-        return jwtService.generateToken(userEntity);
+        return new LoginResponseDto(jwtService.generateToken(userEntity));
     }
 
     @Override
