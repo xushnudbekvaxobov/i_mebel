@@ -6,6 +6,7 @@ import imebel.imebel.service.StoreCategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,10 +24,10 @@ public class StoreCategoryController {
 
     @PreAuthorize("hasRole('MASTER')")
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<?>> getMyCategories() {
+    public ResponseEntity<ApiResponse<?>> getMyCategories(Authentication  authentication) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new ApiResponse<>(true, "get master specializations", storeCategoryService.getMyCategories(),200));
+                .body(new ApiResponse<>(true, "get master specializations", storeCategoryService.getMyCategories(authentication.getName()),200));
     }
 
     @PreAuthorize("hasRole('MASTER')")
@@ -44,7 +45,7 @@ public class StoreCategoryController {
     storeCategoryService.deleteMyCategory(name);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
-                .body(new ApiResponse<>(true, "deleted", null,200));
+                .body(new ApiResponse<>(true, "deleted", null,204));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")

@@ -46,9 +46,7 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
-    public ProductResponseDto createProducts(ProductCreateDto productCreateDto, List<MultipartFile> images) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public ProductResponseDto createProducts(ProductCreateDto productCreateDto, List<MultipartFile> images, String email) {
         StoreEntity masterProfile = storeRepository.findByUserEntity_Email(email).orElseThrow(()-> new DataNotFoundException("master not found"));
         CategoryEntity categoryEntity = categoryRepository.findByName(productCreateDto.getSpecializationName()).orElseThrow(()-> new DataNotFoundException("specialization not found"));
         if (images == null || images.size() > 3) {
@@ -80,9 +78,7 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
-    public PageResponse<ProductResponseDto> getMyProducts(int page, int size) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public PageResponse<ProductResponseDto> getMyProducts(int page, int size, String email) {
         StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(()-> new DataNotFoundException("master not found"));
         PageRequest pageRequest =  PageRequest.of(page, size);
         Page<ProductEntity> productEntityPage = productRepository.getAllByStoreEntity(storeEntity,pageRequest);
@@ -129,7 +125,6 @@ public class ProductsServiceImpl implements ProductsService {
         if(file.getSize() > 10*1024 * 1024) {
             throw new AppBadException("File size exceeds the maximum limit of 10MB");
         }
-
 
     }
 

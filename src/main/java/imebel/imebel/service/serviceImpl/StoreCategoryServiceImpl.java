@@ -35,9 +35,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     }
 
     @Override
-    public List<CategoryResponseDto> getMyCategories() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public List<CategoryResponseDto> getMyCategories(String email) {
         StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(() -> new DataNotFoundException("user profile not found"));
         List<StoreCategoriesEntity> categoryEntity = storeEntity.getStoreCategoryList();
         return categoryEntity.stream().map(StoreCategoriesEntity::getCategory).map(categoryMapper::toDto).toList();

@@ -24,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -51,9 +52,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreResponseDto getMyStore() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public StoreResponseDto getMyStore(String email) {
         StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(()-> new DataNotFoundException("Master Profile not found"));
         return storeMapper.toDto(storeEntity);
     }
@@ -74,9 +73,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreResponseDto createMyStore(StoreDto masterProfileCreateDto, MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public StoreResponseDto createMyStore(StoreDto masterProfileCreateDto, MultipartFile file, String email) {
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));
         Map<String, String> options = new HashMap<>();
         options.put("folder", "imebel/stores/banner");
@@ -96,9 +93,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreResponseDto updateMyStore(StoreDto storeDto) {
-       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-       String email = authentication.getName();
+    public StoreResponseDto updateMyStore(StoreDto storeDto, String email) {
        StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(() -> new DataNotFoundException("User not found"));
        StoreEntity updatedProfile = storeMapper.toEntity(storeEntity, storeDto);
        storeRepository.save(updatedProfile);
@@ -112,16 +107,17 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public String updateStoreBannerImage(MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(() -> new DataNotFoundException("User not found"));
+    public String updateStoreBannerImage(MultipartFile file, String email) {
+        StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(() -> new DataNotFoundException("Store not found"));
         Map<String, String> options = new HashMap<>();
         options.put("folder", "imebel/stores/banner");
-        productsServiceImpl.validateImage(file);
+        ProductsServiceImpl.validateImage(file);
         String imageUrl;
         try{
-            Map uploadResults = cloudinary.uploader().upload(file.getBytes(), options);
+            if (storeEntity.getBannerImageId() != null) {
+                cloudinary.uploader().destroy(storeEntity.getBannerImageId(), Map.of("invalidate", "true"));
+            }
+            Map<?, ?> uploadResults = cloudinary.uploader().upload(file.getBytes(), options);
             imageUrl = uploadResults.get("secure_url").toString();
             String publicId = uploadResults.get("public_id").toString();
             storeEntity.setBannerImageUrl(imageUrl);
@@ -131,6 +127,24 @@ public class StoreServiceImpl implements StoreService {
             throw new AppBadException("Image upload failed");
         }
         return imageUrl;
+    }
+
+    @Transactional
+    @Override
+    public void deleteBannerImage(String imageUrl, String email) {
+        StoreEntity storeEntity = storeRepository.findByUserEntity_Email(email).orElseThrow(() -> new DataNotFoundException("Store not found"));
+        if (storeEntity.getBannerImageUrl() != null && storeEntity.getBannerImageUrl().equals(imageUrl)) {
+            try {
+                cloudinary.uploader().destroy(storeEntity.getBannerImageId(), Map.of("invalidate", "true"));
+                storeEntity.setBannerImageUrl(null);
+                storeEntity.setBannerImageId(null);
+                storeRepository.save(storeEntity);
+            } catch (IOException e) {
+                throw new AppBadException("Failed to delete banner image");
+            }
+        } else {
+            throw new DataNotFoundException("Banner image not found for this store");
+        }
     }
 
     @Override

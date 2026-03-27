@@ -11,13 +11,14 @@ import java.util.List;
 
 @Service
 public interface StoreService {
-    StoreResponseDto getMyStore();
+    StoreResponseDto getMyStore(String email);
     PageResponseDto<StoreResponseDto> getAllStores(int page, int size);
-    StoreResponseDto createMyStore(StoreDto storeDto, MultipartFile file);
-    StoreResponseDto updateMyStore(StoreDto storeDto);
+    StoreResponseDto createMyStore(StoreDto storeDto, MultipartFile file, String email);
+    StoreResponseDto updateMyStore(StoreDto storeDto, String email);
     StoreResponseDto getStoreById(Long id);
-    String updateStoreBannerImage(MultipartFile file);
+    String updateStoreBannerImage(MultipartFile file, String email);
     List<ProductResponseDto> getStoreProducts(Long id);
     List<StoreResponseDto> searchStore(String name, Long categoryId);
+    void deleteBannerImage(String imageUrl, String email);
 
 }

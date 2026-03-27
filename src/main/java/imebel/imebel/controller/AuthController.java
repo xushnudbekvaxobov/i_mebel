@@ -5,6 +5,7 @@ import imebel.imebel.dto.request.ResetPasswordDto;
 import imebel.imebel.dto.request.UserDto;
 import imebel.imebel.dto.response.ApiResponse;
 import imebel.imebel.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Void>> register(@RequestBody UserDto userDto){
+    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody UserDto userDto){
         userService.register(userDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -29,10 +30,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<?>> login(@RequestBody LoginDto loginDto){
+    public ResponseEntity<ApiResponse<?>> login(@Valid @RequestBody LoginDto loginDto){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true,"successfully", userService.login(loginDto),201));
+                .body(new ApiResponse<>(true,"successfully", userService.login(loginDto),200));
     }
 
     @PatchMapping("verify-email/{verificationCode}")
@@ -52,12 +53,12 @@ public class AuthController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
-    @PostMapping("/reset-password")
-    public ResponseEntity<ApiResponse<Void>> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+    @PatchMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
         userService.resetPassword(resetPasswordDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true,"password reset",null,201));
+                .body(new ApiResponse<>(true,"password reset",null,200));
     }
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface StoreCategoryService {
-    List<CategoryResponseDto> getMyCategories();
+    List<CategoryResponseDto> getMyCategories(String email);
     void createMyCategory(String name);
     void deleteMyCategory(String name);
     List<CategoryResponseDto> getAllStoreCategories(Long storeId);

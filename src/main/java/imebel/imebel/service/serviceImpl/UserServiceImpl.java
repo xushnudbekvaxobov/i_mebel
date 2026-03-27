@@ -127,26 +127,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserResponseDto getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public UserResponseDto getCurrentUser(String email) {
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found with email: " + email));
         return userMapper.toResponseDto(userEntity);
     }
 
     @Override
-    public UserResponseDto updateCurrentUser(UserUpdateDto userUpdateDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public UserResponseDto updateCurrentUser(UserUpdateDto userUpdateDto, String email) {
         userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found with email: " + email));
         UserEntity userEntity = userRepository.save(userMapper.toEntity(userUpdateDto));
         return userMapper.toResponseDto(userEntity);
     }
 
     @Override
-    public void deleteMyAccount() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+    public void deleteMyAccount(String email) {
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found with email: " + email));
         userEntity.setStatus(UserStatus.DELETED);
         userRepository.save(userEntity);

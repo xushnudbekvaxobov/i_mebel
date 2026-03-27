@@ -55,7 +55,7 @@ public class CategoryController {
         categoryService.deleteCategory(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new ApiResponse<>(true, "Deleting categories", null, 200));
+                .body(new ApiResponse<>(true, "Deleting categories", null, 204));
     }
 
 }

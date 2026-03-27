@@ -10,8 +10,8 @@ import java.util.List;
 
 @Service
 public interface ProductsService {
-    ProductResponseDto createProducts(ProductCreateDto productCreateDto, List<MultipartFile> images);
-    PageResponse<ProductResponseDto> getMyProducts(int page, int size);
+    ProductResponseDto createProducts(ProductCreateDto productCreateDto, List<MultipartFile> images, String email);
+    PageResponse<ProductResponseDto> getMyProducts(int page, int size, String email);
     ProductResponseDto getProductById(Long id);
     ProductResponseDto updateProduct(Long id, ProductCreateDto productCreateDto);
     void deleteProduct(Long id);
