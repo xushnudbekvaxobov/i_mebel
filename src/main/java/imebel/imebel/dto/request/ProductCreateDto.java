@@ -13,7 +13,7 @@ public class ProductCreateDto {
     @NotBlank(message = "name is can't be empty")
     private String name;
     @NotBlank(message = "specializationName is can't be empty")
-    private String specializationName;
+    private String category;
     @NotBlank(message = "description is can't be empty")
     private String description;
     @NotNull(message = "price is can't be empty")

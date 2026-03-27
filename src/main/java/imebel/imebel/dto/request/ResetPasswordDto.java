@@ -7,15 +7,15 @@ import lombok.Data;
 
 @Data
 public class ResetPasswordDto {
+    @Email(message = "email format is not supported")
     @NotBlank(message = "Email required")
-    @Email(message = "Email format is invalid")
     private String email;
     @NotBlank(message = "Verification code is required")
     private String verificationCode;
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password might be 8 letter")
+    @NotBlank(message = "new password required")
+    @Size(min = 8, max = 10, message = "password must be between 8 and 10 characters")
     private String newPassword;
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password might be 8 letter")
+    @NotBlank(message = "confirm password required")
+    @Size(min = 8, max = 10, message = "password must be between 8 and 10 characters")
     private String confirmPassword;
 }

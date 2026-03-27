@@ -65,6 +65,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void register(UserDto userDto) {
+        if (userDto.getRole().equals(UserRole.ADMIN)) {
+            throw new AppBadException("Can't register admin");
+        }
         Optional<UserEntity> user = userRepository.findByEmail(userDto.getEmail());
         if (user.isPresent()){
             throw new AppBadException("user already exist");

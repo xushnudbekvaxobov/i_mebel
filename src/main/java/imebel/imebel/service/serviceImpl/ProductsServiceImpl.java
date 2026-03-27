@@ -48,9 +48,9 @@ public class ProductsServiceImpl implements ProductsService {
     @Override
     public ProductResponseDto createProducts(ProductCreateDto productCreateDto, List<MultipartFile> images, String email) {
         StoreEntity masterProfile = storeRepository.findByUserEntity_Email(email).orElseThrow(()-> new DataNotFoundException("master not found"));
-        CategoryEntity categoryEntity = categoryRepository.findByName(productCreateDto.getSpecializationName()).orElseThrow(()-> new DataNotFoundException("specialization not found"));
+        CategoryEntity categoryEntity = categoryRepository.findByName(productCreateDto.getCategory()).orElseThrow(()-> new DataNotFoundException("category not found"));
         if (images == null || images.size() > 3) {
-            throw new AppBadException("Invalid number of images. You can upload up to 3 images.");
+            throw new AppBadException("Invalid number of images. You can upload up to max 3 images.");
         }
         ProductEntity productEntity = productMapper.toEntity(masterProfile, productCreateDto, categoryEntity);
         productRepository.save(productEntity);
@@ -102,7 +102,7 @@ public class ProductsServiceImpl implements ProductsService {
     @Override
     public ProductResponseDto updateProduct(Long id, ProductCreateDto productCreateDto) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(()-> new DataNotFoundException("product not found"));
-        CategoryEntity categoryEntity = categoryRepository.findByName(productCreateDto.getSpecializationName()).orElseThrow(()-> new DataNotFoundException("specialization not found"));
+        CategoryEntity categoryEntity = categoryRepository.findByName(productCreateDto.getCategory()).orElseThrow(()-> new DataNotFoundException("category not found"));
         productMapper.toEntity(productCreateDto, categoryEntity);
         ProductEntity savedProduct = productRepository.save(productEntity);
         return productMapper.toDto(savedProduct);
