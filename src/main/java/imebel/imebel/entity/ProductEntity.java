@@ -16,10 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProductEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "store_id", nullable = false)
     private StoreEntity storeEntity;
@@ -48,12 +45,6 @@ public class ProductEntity{
     private Integer reviewCount;
     @OneToMany(mappedBy = "productEntity")
     private List<ProductImageEntity> productImages;
-    @Column(nullable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @Column(nullable = false)
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
     @Column(nullable = false)
     private ProductStatus status;
 }

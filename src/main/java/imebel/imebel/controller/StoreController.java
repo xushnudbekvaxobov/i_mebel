@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/stores")
 public class StoreController {
@@ -33,7 +35,7 @@ public class StoreController {
     @PreAuthorize("hasRole('MASTER')")
     @PostMapping(value = "/me/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<?>> createMyStore(@Valid @ModelAttribute StoreDto storeDto,
-                                                        @RequestPart(value = "image", required = false) MultipartFile file,
+                                                        @RequestParam(value = "image", required = false) MultipartFile file,
                                                         Authentication authentication) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -67,7 +69,7 @@ public class StoreController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> getStoreById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<?>> getStoreById(@PathVariable UUID id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ApiResponse<>(true,"Getting store profile", storeService.getStoreById(id), 200));
@@ -75,7 +77,7 @@ public class StoreController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/{storeId}/products")
-    public ResponseEntity<ApiResponse<?>> getStoreProducts(@PathVariable Long storeId){
+    public ResponseEntity<ApiResponse<?>> getStoreProducts(@PathVariable UUID storeId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ApiResponse<>(true,"Getting store profile", storeService.getStoreProducts(storeId), 200));
@@ -84,7 +86,7 @@ public class StoreController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<?>> searchStore(@RequestParam(required = false) String name,
-                                                      @RequestParam(required = false) Long categoryId){
+                                                      @RequestParam(required = false) UUID categoryId){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ApiResponse<>(true, "successfully search store", storeService.searchStore(name, categoryId), 200));

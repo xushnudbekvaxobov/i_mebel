@@ -20,13 +20,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,updatable = false)
-    private Long id;
-    @OneToOne(mappedBy = "userEntity")
+public class UserEntity extends BaseEntity implements UserDetails {
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL,  orphanRemoval = true)
     private EmailVerificationEntity emailVerificationEntity;
+    @OneToOne(mappedBy = "userEntity", cascade =   CascadeType.ALL,  orphanRemoval = true)
+    private StoreEntity storeEntity;
     @Column(nullable = false)
     private String firstName;
     private String lastName;
@@ -44,10 +42,6 @@ public class UserEntity implements UserDetails {
     private String profileImage;
     @Column(name = "address", length = 255)
     private String address;
-    @Column( nullable = false,updatable = false)
-    private LocalDate createdAt;
-    @Column( nullable = false)
-    private LocalDate updatedAt;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
     @Column(nullable = false)

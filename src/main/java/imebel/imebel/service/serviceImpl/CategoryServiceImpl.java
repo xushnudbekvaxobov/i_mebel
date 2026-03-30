@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -40,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponseDto updateCategory(Long id, String name) {
+    public CategoryResponseDto updateCategory(UUID id, String name) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Category with id " + id + " does not exist"));
         categoryEntity.setName(name);
        CategoryEntity savedCategory =  categoryRepository.save(categoryEntity);
@@ -48,13 +49,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponseDto getCategoryById(Long id) {
+    public CategoryResponseDto getCategoryById(UUID id) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new AppBadException("Category with id " + id + " does not exist"));
         return new CategoryResponseDto(categoryEntity.getId(), categoryEntity.getName(),  categoryEntity.getStatus());
     }
 
     @Override
-    public void deleteCategory(Long id) {
+    public void deleteCategory(UUID id) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Category with id " + id + " does not exist"));
         categoryEntity.setStatus(CategoryStatus.DELETED);
         categoryRepository.save(categoryEntity);

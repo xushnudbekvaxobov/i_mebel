@@ -4,12 +4,13 @@ import imebel.imebel.dto.response.CategoryResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public interface CategoryService {
     List<CategoryResponseDto> getAllCategories();
     void createCategory(String name);
-    CategoryResponseDto  updateCategory(Long id, String name);
-    CategoryResponseDto getCategoryById(Long id);
-    void deleteCategory(Long id);
+    CategoryResponseDto  updateCategory(UUID id, String name);
+    CategoryResponseDto getCategoryById(UUID id);
+    void deleteCategory(UUID id);
 }

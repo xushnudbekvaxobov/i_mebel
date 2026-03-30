@@ -12,10 +12,7 @@ import lombok.Setter;
 @Table(name = "store_categories")
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoreCategoriesEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class StoreCategoriesEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private StoreEntity store;

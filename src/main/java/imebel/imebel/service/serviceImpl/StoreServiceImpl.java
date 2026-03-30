@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class StoreServiceImpl implements StoreService {
@@ -75,21 +76,27 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreResponseDto createMyStore(StoreDto masterProfileCreateDto, MultipartFile file, String email) {
         UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));
-        Map<String, String> options = new HashMap<>();
-        options.put("folder", "imebel/stores/banner");
-        productsServiceImpl.validateImage(file);
-        new StoreEntity();
-        StoreEntity storeEntity;
-        try {
-            Map uploadResults = cloudinary.uploader().upload(file.getBytes(), options);
-            String imageUrl = uploadResults.get("secure_url").toString();
-            String publicId = uploadResults.get("public_id").toString();
-            storeEntity = storeMapper.toEntity(masterProfileCreateDto, userEntity, imageUrl, publicId);
-            storeRepository.save(storeEntity);
-        }catch (IOException e) {
-                throw new AppBadException("Image upload failed");
+        if (userEntity.getStoreEntity() != null) {
+            throw new AppBadException("Store already exists with email: "  + email);
         }
-        return getStoreById(storeEntity.getId());
+        String imageUrl = null;
+        String publicId = null;
+        StoreEntity storeEntity;
+        if (file != null) {
+            ProductsServiceImpl.validateImage(file);
+            Map<String, String> options = new HashMap<>();
+            options.put("folder", "imebel/stores/banner");
+            try {
+                Map uploadResults = cloudinary.uploader().upload(file.getBytes(), options);
+                 imageUrl = uploadResults.get("secure_url").toString();
+                 publicId = uploadResults.get("public_id").toString();
+            } catch (IOException e) {
+                throw new AppBadException("Image upload failed");
+            }
+        }
+        storeEntity = storeMapper.toEntity(masterProfileCreateDto, userEntity, imageUrl, publicId);
+        StoreEntity savedStore = storeRepository.save(storeEntity);
+        return storeMapper.toDto(savedStore);
     }
 
     @Override
@@ -101,7 +108,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreResponseDto getStoreById(Long id) {
+    public StoreResponseDto getStoreById(UUID id) {
         StoreEntity storeEntity = storeRepository.findById(id).orElseThrow(() -> new DataNotFoundException("MasterProfile not found"));
         return storeMapper.toDto(storeEntity);
     }
@@ -148,13 +155,13 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<ProductResponseDto> getStoreProducts(Long id) {
+    public List<ProductResponseDto> getStoreProducts(UUID id) {
        StoreEntity storeEntity =  storeRepository.findById(id).orElseThrow(() -> new DataNotFoundException("StoreProfile not found"));
         return storeEntity.getProductList().stream().map(productMapper::toDto).toList();
     }
 
     @Override
-    public List<StoreResponseDto> searchStore(String name, Long categoryId) {
+    public List<StoreResponseDto> searchStore(String name, UUID categoryId) {
         List<StoreEntity> storeEntityList = storeRepository.searchStores(name, categoryId);
         return storeEntityList.stream().map(storeMapper::toDto).toList();
     }

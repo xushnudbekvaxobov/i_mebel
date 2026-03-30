@@ -6,11 +6,12 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 public class ProductResponseDto {
-    private Long id;
+    private UUID id;
     private String SpecializationName;
     private String name;
     private String description;

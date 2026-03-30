@@ -18,10 +18,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "stores")
-public class StoreEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class StoreEntity extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity userEntity;
@@ -46,10 +43,4 @@ public class StoreEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "approval_status", nullable = false, length = 20)
     private ApprovalStatus approvalStatus;
-    @Column(nullable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @Column(nullable = false)
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 }

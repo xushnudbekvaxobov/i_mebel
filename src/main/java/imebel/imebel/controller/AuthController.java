@@ -26,7 +26,7 @@ public class AuthController {
         userService.register(userDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(true,"successfully",null,201));
+                .body(new ApiResponse<>(true,"successfully",null,200));
     }
 
     @PostMapping("/login")
@@ -52,10 +52,11 @@ public class AuthController {
                 .body(new  ApiResponse<>(true,"successfully",null,200));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
-    @PatchMapping("/reset-password")
-    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
-        userService.resetPassword(resetPasswordDto);
+
+    @PatchMapping("/reset-password/{email}")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@PathVariable String email, @Valid @RequestBody ResetPasswordDto resetPasswordDto) {
+        System.out.println("email: " + email);
+        userService.resetPassword(email, resetPasswordDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true,"password reset",null,200));

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +30,9 @@ public class ProductImagesServiceImpl implements ProductImagesService {
     private final ProductImageMapper productImageMapper;
 
     @Override
-    public void deleteProductImage(Long productId, Long imageId) {
+    public void deleteProductImage(UUID productId, UUID imageId) {
         productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("product not found"));
-        Long imageCount = productImageRepository.countImagesByProductId(productId);
+        long imageCount = productImageRepository.countImagesByProductId(productId);
         if (imageCount < 2) {
             throw new AppBadException("Product must have at least one image");
         }
@@ -50,7 +51,7 @@ public class ProductImagesServiceImpl implements ProductImagesService {
     }
 
     @Override
-    public ProductImageResponseDto createProductImage(Long productId, MultipartFile file) {
+    public ProductImageResponseDto createProductImage(UUID productId, MultipartFile file) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("product not found"));
         if (productImageRepository.countImagesByProductId(productId) >= 3) {
             throw new AppBadException("Product must have at most three image");
@@ -76,7 +77,7 @@ public class ProductImagesServiceImpl implements ProductImagesService {
     }
 
     @Override
-    public List<ProductImageResponseDto> getProductImage(Long productId) {
+    public List<ProductImageResponseDto> getProductImage(UUID productId) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("product not found"));
         List<ProductImageEntity> productImageEntity = productEntity.getProductImages();
         return productImageEntity.stream().map(productImageMapper::toDto).toList();
@@ -84,7 +85,7 @@ public class ProductImagesServiceImpl implements ProductImagesService {
 
     @Override
     @Transactional
-    public List<ProductImageResponseDto> changeMainImage(Long productId, Long imageId) {
+    public List<ProductImageResponseDto> changeMainImage(UUID productId, UUID imageId) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new DataNotFoundException("product not found"));
         List<ProductImageEntity> productImageEntity = productEntity.getProductImages();
         for (ProductImageEntity productImageEntity1 : productImageEntity) {

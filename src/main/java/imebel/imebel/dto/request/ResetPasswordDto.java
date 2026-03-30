@@ -7,9 +7,6 @@ import lombok.Data;
 
 @Data
 public class ResetPasswordDto {
-    @Email(message = "email format is not supported")
-    @NotBlank(message = "Email required")
-    private String email;
     @NotBlank(message = "Verification code is required")
     private String verificationCode;
     @NotBlank(message = "new password required")

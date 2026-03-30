@@ -10,10 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductImageEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProductImageEntity extends BaseEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
     @Column(nullable = false)

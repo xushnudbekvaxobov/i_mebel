@@ -13,12 +13,8 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "categories")
-public class CategoryEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CategoryEntity extends BaseEntity {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     private CategoryStatus status;
-
 }

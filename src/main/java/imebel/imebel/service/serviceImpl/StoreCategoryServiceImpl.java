@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class StoreCategoryServiceImpl implements StoreCategoryService {
@@ -66,7 +67,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     }
 
     @Override
-    public List<CategoryResponseDto> getAllStoreCategories(Long storeId) {
+    public List<CategoryResponseDto> getAllStoreCategories(UUID storeId) {
         StoreEntity storeEntity = storeRepository.findById(storeId).orElseThrow(()-> new DataNotFoundException("user profile not found"));
         List<StoreCategoriesEntity> storeCategoriesEntities = storeEntity.getStoreCategoryList();
         return storeCategoriesEntities.stream().map(StoreCategoriesEntity::getCategory)

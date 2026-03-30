@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")
@@ -46,7 +47,7 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> getProductById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<?>> getProductById(@PathVariable UUID id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ApiResponse<>(true, "successfully", productsService.getProductById(id),200));
@@ -54,7 +55,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('MASTER')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> updateProduct(@PathVariable Long id,
+    public ResponseEntity<ApiResponse<?>> updateProduct(@PathVariable UUID id,
                                                         @Valid @RequestBody ProductCreateDto productDto){
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -63,7 +64,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('MASTER')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<?>> deleteProduct(@PathVariable UUID id){
         productsService.deleteProduct(id);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

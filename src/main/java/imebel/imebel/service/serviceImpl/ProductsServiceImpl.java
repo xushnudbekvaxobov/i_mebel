@@ -94,13 +94,13 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
-    public ProductResponseDto getProductById(Long id) {
+    public ProductResponseDto getProductById(UUID id) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(()-> new DataNotFoundException("product not found"));
         return productMapper.toDto(productEntity);
     }
 
     @Override
-    public ProductResponseDto updateProduct(Long id, ProductCreateDto productCreateDto) {
+    public ProductResponseDto updateProduct(UUID id, ProductCreateDto productCreateDto) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(()-> new DataNotFoundException("product not found"));
         CategoryEntity categoryEntity = categoryRepository.findByName(productCreateDto.getCategory()).orElseThrow(()-> new DataNotFoundException("category not found"));
         productMapper.toEntity(productCreateDto, categoryEntity);
@@ -109,7 +109,7 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void deleteProduct(UUID id) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(() -> new DataNotFoundException("product not found"));
         productEntity.setStatus(ProductStatus.DELETED);
         productRepository.save(productEntity);

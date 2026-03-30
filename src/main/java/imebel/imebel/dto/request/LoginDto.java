@@ -11,6 +11,5 @@ public class LoginDto {
     @NotBlank(message = "Email required")
     private String email;
     @NotBlank(message = "Password required")
-    @Size(min = 8, max = 10, message = "password must be between 8 and 10 characters")
     private String password;
 }

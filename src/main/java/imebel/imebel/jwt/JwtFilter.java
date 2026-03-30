@@ -31,6 +31,16 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI();
+
+        if (path.equals("/auth/register") ||
+                path.equals("/auth/login") ||
+                path.startsWith("/auth/verify-email") ||
+                path.startsWith("/auth/forgot-password") ||
+                path.startsWith("/auth/reset-password") ) {
+            filterChain.doFilter(request, response);
+            return;
+        }
             String header = request.getHeader("Authorization");
             if(header == null || !header.startsWith("Bearer ")){
                 filterChain.doFilter(request, response);

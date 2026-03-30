@@ -15,7 +15,7 @@ public interface UserService {
     LoginResponseDto login(LoginDto loginDto);
     void verifyEmail(String email, String verificationCode);
     void sendVerificationCodeForForgotPassword(String email);
-    void resetPassword(ResetPasswordDto resetPasswordDto);
+    void resetPassword(String email, ResetPasswordDto resetPasswordDto);
     UserResponseDto getCurrentUser(String email);
     UserResponseDto updateCurrentUser(UserUpdateDto  userUpdateDto, String email);
     void deleteMyAccount(String email);

@@ -9,8 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
+public interface StoreRepository extends JpaRepository<StoreEntity, UUID> {
 
     Optional<StoreEntity> findByUserEntity_Email(String email);
 
@@ -24,5 +25,5 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
             nativeQuery = true)
     List<StoreEntity> searchStores(
                             @Param("name") String name,
-                            @Param("categoryId") Long categoryId);
+                            @Param("categoryId") UUID categoryId);
 }

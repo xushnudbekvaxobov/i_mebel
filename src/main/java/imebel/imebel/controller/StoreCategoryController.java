@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/store/categories")
@@ -27,7 +28,7 @@ public class StoreCategoryController {
     public ResponseEntity<ApiResponse<?>> getMyCategories(Authentication  authentication) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new ApiResponse<>(true, "get master specializations", storeCategoryService.getMyCategories(authentication.getName()),200));
+                .body(new ApiResponse<>(true, "get master categories", storeCategoryService.getMyCategories(authentication.getName()),200));
     }
 
     @PreAuthorize("hasRole('MASTER')")
@@ -50,7 +51,7 @@ public class StoreCategoryController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/{storeId}")
-    public ResponseEntity<ApiResponse<?>> getAllCategories(@PathVariable Long storeId) {
+    public ResponseEntity<ApiResponse<?>> getAllCategories(@PathVariable UUID storeId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ApiResponse<>(true, "success", storeCategoryService.getAllStoreCategories(storeId),200));
