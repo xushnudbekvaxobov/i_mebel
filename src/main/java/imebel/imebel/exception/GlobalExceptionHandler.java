@@ -3,7 +3,6 @@ package imebel.imebel.exception;
 import imebel.imebel.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailSendException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +13,14 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponse> handleUnauthorizedException(UnauthorizedException e) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(false, e.getMessage(), null, 401));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
         Map<String, String> errors = new HashMap<>();
@@ -42,13 +49,6 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(false, "Data not found", errors, 404));
     }
 
-    @ExceptionHandler(MailSendException.class)
-    public ResponseEntity<?> handleMailException(MailSendException ex) {
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new  ApiResponse<>(false, "Internal server error", ex.getMessage(), 500));
-    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<?>> handleRuntimeException(RuntimeException ex){

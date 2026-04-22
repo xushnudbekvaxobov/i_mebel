@@ -18,7 +18,7 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-    @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
+   // @PreAuthorize("hasAnyRole('ADMIN', 'MASTER', 'CLIENT')")
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<?>> getAllCategories() {
         return ResponseEntity

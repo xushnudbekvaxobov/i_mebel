@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.UUID;
+
 @SpringBootApplication
 public class IMebelApplication {
 
@@ -11,6 +13,7 @@ public class IMebelApplication {
         SpringApplication.run(IMebelApplication.class, args);
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         System.out.println(bCryptPasswordEncoder.encode("admin123"));
+        System.out.println(UUID.randomUUID());
     }
 
 }

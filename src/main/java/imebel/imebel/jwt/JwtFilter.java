@@ -1,19 +1,20 @@
 package imebel.imebel.jwt;
 
 import imebel.imebel.dto.request.JwtDto;
+import imebel.imebel.exception.UnauthorizedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,9 +23,11 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
-    public JwtFilter(JwtService jwtService) {
+    public JwtFilter(JwtService jwtService, HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Override
@@ -37,7 +40,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 path.equals("/auth/login") ||
                 path.startsWith("/auth/verify-email") ||
                 path.startsWith("/auth/forgot-password") ||
-                path.startsWith("/auth/reset-password") ) {
+                path.startsWith("/auth/reset-password") ||
+        path.equals("/categories/all")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -51,15 +55,16 @@ public class JwtFilter extends OncePerRequestFilter {
                 JwtDto jwtDto = jwtService.decode(token);
                 String email = jwtDto.getEmail();
                 String role = jwtDto.getRole();
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, List.of(new SimpleGrantedAuthority(role)));
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, List.of(new SimpleGrantedAuthority(role)));
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
                 filterChain.doFilter(request, response);
-                return;
             }catch (ExpiredJwtException e){
-                throw new BadCredentialsException("Token is not active");
+                handlerExceptionResolver.resolveException(request, response, null, new UnauthorizedException("Authentication token has expired"));
             }catch (JwtException e){
-                throw new BadCredentialsException("Invalid token");
+                handlerExceptionResolver.resolveException(request, response, null,  new UnauthorizedException("Authentication token is invalid"));
             }
     }
 }

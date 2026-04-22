@@ -31,3 +31,14 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment ###
+.env
+.env
+.env.*.local
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
+
+### Docker ###
+.dockerignore
+

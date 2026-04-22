@@ -1,2 +1,0 @@
-insert into users (first_name, last_name, phone, email, password, auth_provider, provider_id, role, profile_image, address, created_at, updated_at, status, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled)
-values ('Abdumannonov', 'Samandar', '+998901234567', 'salomxacer@gmail.com', '$2a$10$Keh.JAWnUoaKa/CzoUaqk.gXGSgCF6Y6zXUPOgnLljYWIpZXlte0K', 'LOCAL', null, 'ADMIN', null, null, CURRENT_DATE, CURRENT_DATE, 'ACTIVE', true, true, true,true);

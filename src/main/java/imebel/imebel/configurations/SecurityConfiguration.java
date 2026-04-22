@@ -47,7 +47,8 @@ public class SecurityConfiguration {
                                         "/auth/reset-password/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**",
-                                        "/swagger-ui.html").permitAll()
+                                        "/swagger-ui.html",
+                                        "/categories/all").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
